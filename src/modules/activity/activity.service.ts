@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaService } from '../../prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { ClientKafka } from '@nestjs/microservices';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { Activity } from '@prisma/client';
@@ -15,7 +15,10 @@ export class ActivityService implements OnModuleInit {
     await this.kafkaClient.connect();
   }
 
-  async createActivity(dto: CreateActivityDto): Promise<Activity> {
+  async createActivity(
+    dto: CreateActivityDto,
+    tenantId: string,
+  ): Promise<Activity> {
     const activity = await this.prisma.activity.create({
       data: {
         actorId: dto.actorId,
@@ -23,13 +26,42 @@ export class ActivityService implements OnModuleInit {
         objectId: dto.objectId,
         objectType: dto.objectType,
         metaData: dto.metaData,
-        tenantId: 'tenant-001',
+        tenantId: tenantId,
       },
     });
-    this.kafkaClient.emit('activity.create', {
-      key: activity.actorId,
-      value: activity,
-    });
+
+    try {
+      this.kafkaClient.emit('activity.created', {
+        key: tenantId,
+        value: activity,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
     return activity;
+  }
+
+  async findAll(tenantId: string, page: number = 1, size: number = 10) {
+    const skip = (page - 1) * size;
+
+    const [data, total] = await Promise.all([
+      this.prisma.activity.findMany({
+        where: { tenantId },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: size,
+      }),
+      this.prisma.activity.count({ where: { tenantId } }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / size),
+      },
+    };
   }
 }
