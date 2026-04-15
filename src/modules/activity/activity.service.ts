@@ -33,7 +33,7 @@ export class ActivityService implements OnModuleInit {
     try {
       this.kafkaClient.emit('activity.created', {
         key: tenantId,
-        value: activity,
+        value: JSON.stringify(activity),
       });
     } catch (error) {
       console.log(error);
