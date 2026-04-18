@@ -11,6 +11,9 @@ export class CreateActivityDto {
   @IsString()
   @IsNotEmpty()
   actorId: string;
+  @IsString()
+  @IsNotEmpty()
+  recipientId: string;
   @IsEnum(Verb)
   @IsNotEmpty()
   verb: Verb;
