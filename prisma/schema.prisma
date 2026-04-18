@@ -28,16 +28,19 @@ enum Verb {
 }
 
 model Activity {
-  id         String     @id @default(uuid())
-  actorId    String
-  tenantId   String
-  verb       Verb
-  objectId   String
-  objectType ObjectType
-  metaData   Json?
-  createdAt  DateTime   @default(now())
+  id          String     @id @default(uuid())
+  actorId     String
+  recipientId String
+  tenantId    String
+  verb        Verb
+  objectId    String
+  objectType  ObjectType
+  metaData    Json?
+  createdAt   DateTime   @default(now())
+  updateAt    DateTime   @default(now())
 
   @@index([actorId, tenantId])
   @@index([tenantId, verb])
   @@index([objectId, objectType])
+  @@index([recipientId])
 }
