@@ -27,6 +27,7 @@ export class ActivityService implements OnModuleInit {
         objectType: dto.objectType,
         metaData: dto.metaData,
         tenantId: tenantId,
+        recipientId: dto.recipientId,
       },
     });
 
