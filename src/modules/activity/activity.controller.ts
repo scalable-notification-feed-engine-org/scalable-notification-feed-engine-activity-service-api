@@ -4,7 +4,7 @@ import type { Request } from 'express';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { EventPattern, Payload } from '@nestjs/microservices';
 
-@Controller('activity')
+@Controller('/activity-service/api/v1/activity')
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 
