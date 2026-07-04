@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ActivityController } from './activity.controller';
 import { ActivityService } from './activity.service';
-import { PrismaService } from '../../prisma/prisma.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Module({
   imports: [
@@ -23,6 +23,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ]),
   ],
   controllers: [ActivityController],
-  providers: [ActivityService],
+  providers: [ActivityService, PrismaService],
 })
 export class ActivityModule {}
