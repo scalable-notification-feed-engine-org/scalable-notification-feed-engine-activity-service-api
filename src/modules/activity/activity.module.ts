@@ -4,6 +4,7 @@ import { ActivityService } from './activity.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PrismaService } from '../../prisma/prisma.service';
 
+
 @Module({
   imports: [
     ClientsModule.register([
